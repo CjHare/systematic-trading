@@ -40,6 +40,8 @@ import com.systematic.trading.signals.data.api.alpha.vantage.AlphaVantageAPI;
 import com.systematic.trading.signals.data.api.alpha.vantage.converter.AlphaVantageResponseConverter;
 import com.systematic.trading.signals.data.api.alpha.vantage.dao.impl.FileValidatedAlphaVantageConfigurationDao;
 import com.systematic.trading.signals.data.api.alpha.vantage.dao.impl.HttpAlphaVantageApiDao;
+import com.systematic.trading.signals.data.api.alpha.vantage.dao.impl.HttpAlphaVantageApiFormatterDigitalCurrencyDaily;
+import com.systematic.trading.signals.data.api.alpha.vantage.dao.impl.HttpAlphaVantageApiFormatterTimeSeriesDaily;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
 import com.systematic.trading.signals.data.api.quandl.converter.QuandlResponseConverter;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlApiDao;
@@ -56,6 +58,7 @@ public class EquityApiFactory {
 
 	private static final String QUANDL = "quandl";
 	private static final String ALPHA_VANTAGE = "alpha-vantage";
+	private static final String ALPHA_VANTAGE_CRYPTO = "alpha-vantage-crypto";
 
 	public Set<EquityApiLaunchArgument> launchArguments( final DataServiceType api )
 	        throws ConfigurationValidationException {
@@ -67,7 +70,8 @@ public class EquityApiFactory {
 			case ALPHA_VANTAGE:
 				return EnumSet.noneOf(EquityApiLaunchArgument.class);
 
-			// TODO different data service type for alpha vantage Crypto
+			case ALPHA_VANTAGE_CRYPTO:
+				return EnumSet.noneOf(EquityApiLaunchArgument.class);
 
 			default:
 				throw new ConfigurationValidationException(
@@ -85,6 +89,9 @@ public class EquityApiFactory {
 			case ALPHA_VANTAGE:
 				return aplhaVantage();
 
+			case ALPHA_VANTAGE_CRYPTO:
+				return aplhaVantageCrypto();
+
 			default:
 				throw new ConfigurationValidationException(
 				        String.format("Unsupported data service type: %s", api.type()));
@@ -94,13 +101,14 @@ public class EquityApiFactory {
 	private DataServiceStructure serviceStructure( final EnumMap<EquityApiLaunchArgument, ?> arguments )
 	        throws ConfigurationValidationException {
 
-		if (!arguments.containsKey(
-		        EquityApiLaunchArgument.DATA_SERVICE_STRUCTURE)) { throw new ConfigurationValidationException(
-		                "Missing mandatory EquityApi argument of DATA_SERVICE_STRUCTURE"); }
+		if (!arguments.containsKey(EquityApiLaunchArgument.DATA_SERVICE_STRUCTURE)) {
+			throw new ConfigurationValidationException(
+			        "Missing mandatory EquityApi argument of DATA_SERVICE_STRUCTURE");
+		}
 
-		if (arguments.get(
-		        EquityApiLaunchArgument.DATA_SERVICE_STRUCTURE) instanceof DataServiceStructure) { return (DataServiceStructure) arguments
-		                .get(EquityApiLaunchArgument.DATA_SERVICE_STRUCTURE); }
+		if (arguments.get(EquityApiLaunchArgument.DATA_SERVICE_STRUCTURE) instanceof DataServiceStructure) {
+			return (DataServiceStructure) arguments.get(EquityApiLaunchArgument.DATA_SERVICE_STRUCTURE);
+		}
 
 		throw new ConfigurationValidationException(
 		        "Missing mandatory EquityApi argument of DATA_SERVICE_STRUCTURE of type: DataServiceStructure");
@@ -111,7 +119,23 @@ public class EquityApiFactory {
 		final EquityApiConfiguration configuration = new FileValidatedAlphaVantageConfigurationDao().configuration();
 
 		return new AlphaVantageAPI(
-		        new HttpAlphaVantageApiDao(configuration, new AlphaVantageResponseConverter()),
+		        new HttpAlphaVantageApiDao(
+		                configuration,
+		                new HttpAlphaVantageApiFormatterTimeSeriesDaily(),
+		                new AlphaVantageResponseConverter()),
+		        configuration);
+	}
+
+	private EquityApi aplhaVantageCrypto()
+	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
+
+		final EquityApiConfiguration configuration = new FileValidatedAlphaVantageConfigurationDao().configuration();
+
+		return new AlphaVantageAPI(
+		        new HttpAlphaVantageApiDao(
+		                configuration,
+		                new HttpAlphaVantageApiFormatterDigitalCurrencyDaily(),
+		                new AlphaVantageResponseConverter()),
 		        configuration);
 	}
 

@@ -23,24 +23,77 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.input;
+package com.systematic.trading.signals.data.api.alpha.vantage.resource;
+
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
- * Equity data set that contains equity data.
+ * Resource for a trading day object, the leaf return type from AlphaVantage API.
  * 
  * @author CJ Hare
  */
-public class EquityDataset {
+@JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class TimeSeriesDigitalCurrencyDailyAudResource implements TimeSeriesEntry {
 
-	private final String dataset;
+	private String open;
+	private String high;
+	private String low;
+	private String close;
 
-	public EquityDataset( final String dataset ) {
+	@Override
+	@JsonGetter("1a. open (AUD)")
+	public String open() {
 
-		this.dataset = dataset;
+		return open;
 	}
 
-	public String dataset() {
+	@JsonSetter("1a. open (AUD)")
+	public void open( final String open ) {
 
-		return dataset;
+		this.open = open;
+	}
+
+	@Override
+	@JsonGetter("2a. high (AUD)")
+	public String high() {
+
+		return high;
+	}
+
+	@JsonSetter("2a. high (AUD)")
+	public void high( final String high ) {
+
+		this.high = high;
+	}
+
+	@Override
+	@JsonGetter("3a. low (AUD)")
+	public String low() {
+
+		return low;
+	}
+
+	@JsonSetter("3a. low (AUD)")
+	public void low( final String low ) {
+
+		this.low = low;
+	}
+
+	@Override
+	@JsonGetter("4a. close (AUD)")
+	public String close() {
+
+		return close;
+	}
+
+	@JsonSetter("4a. close (AUD)")
+	public void close( final String close ) {
+
+		this.close = close;
 	}
 }

@@ -23,44 +23,24 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.equity;
-
-import com.systematic.trading.backtest.equity.TickerSymbol;
-import com.systematic.trading.backtest.input.TickerDataset;
-import com.systematic.trading.model.equity.EquityIdentity;
+package com.systematic.trading.backtest.input;
 
 /**
- * Supported configurations of equities for back testing.
+ * Suffix component of the ticker, identifying the source set containing the ticker symbol (prefix).
  * 
  * @author CJ Hare
  */
-public class EquityConfiguration {
+public class TickerDataset {
 
-	private static final int SCALE = 4;
+	private final String dataset;
 
-	private final TickerDataset tickerDataset;
-	private final TickerSymbol tickerSymbol;
-	private final EquityManagementFeeConfiguration managementFee;
+	public TickerDataset( final String dataset ) {
 
-	public EquityConfiguration( final TickerDataset dataset, final TickerSymbol tickerSymbol ) {
-
-		this.tickerSymbol = tickerSymbol;
-		this.tickerDataset = dataset;
-		this.managementFee = EquityManagementFeeConfiguration.NONE;
+		this.dataset = dataset;
 	}
 
-	public EquityIdentity equityIdentity() {
+	public String dataset() {
 
-		return new EquityIdentity(tickerSymbol.symbol(), SCALE);
-	}
-
-	public EquityManagementFeeConfiguration managementFee() {
-
-		return managementFee;
-	}
-
-	public String tickerDataset() {
-
-		return tickerDataset.dataset();
+		return dataset;
 	}
 }

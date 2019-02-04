@@ -42,7 +42,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.equity.TickerSymbol;
-import com.systematic.trading.backtest.input.EquityDataset;
+import com.systematic.trading.backtest.input.TickerDataset;
 
 /**
  * Verifying the behavior of the EquityArguments.
@@ -59,7 +59,7 @@ public class EquityArgumentsTest {
 	private LaunchArgument<TickerSymbol> tickerSymbolArgument;
 
 	@Mock
-	private LaunchArgument<EquityDataset> equityDatasetArgument;
+	private LaunchArgument<TickerDataset> equityDatasetArgument;
 
 	/** Equity argument parser instance being tested. */
 	private EquityArguments parser;
@@ -127,7 +127,7 @@ public class EquityArgumentsTest {
 		final Map<LaunchArgumentKey, String> arguments = new EnumMap<>(LaunchArgumentKey.class);
 		arguments.put(LaunchArgumentKey.DATA_SERVICE, dataService);
 		arguments.put(LaunchArgumentKey.DATA_SERVICE_STRUCTURE, dataServiceStructure);
-		arguments.put(LaunchArgumentKey.EQUITY_DATASET, equityDataSet);
+		arguments.put(LaunchArgumentKey.TICKER_DATASET, equityDataSet);
 		arguments.put(LaunchArgumentKey.TICKER_SYMBOL, tickerSymbol);
 		return arguments;
 	}
@@ -147,7 +147,7 @@ public class EquityArgumentsTest {
 	private void setUpEquityDataSet( final String dataSet ) {
 
 		when(equityDatasetArgument.get(anyMapOf(LaunchArgumentKey.class, String.class)))
-		        .thenReturn(new EquityDataset(dataSet));
+		        .thenReturn(new TickerDataset(dataSet));
 	}
 
 	private void setUpEquityDataSetException() {
@@ -170,8 +170,8 @@ public class EquityArgumentsTest {
 
 	private void verifyEquityDataSet( final String expected ) {
 
-		assertNotNull(parser.equityDataset());
-		assertEquals(expected, parser.equityDataset().dataset());
+		assertNotNull(parser.tickerDataset());
+		assertEquals(expected, parser.tickerDataset().dataset());
 	}
 
 	private void verifyTickerSymbol( final String expected ) {

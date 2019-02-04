@@ -63,7 +63,7 @@ public class HistoryRetrievalRequestUtil {
 		return new HistoryRetrievalRequest() {
 
 			@Override
-			public String equityDataset() {
+			public String tickerDataset() {
 
 				return datasetId;
 			}

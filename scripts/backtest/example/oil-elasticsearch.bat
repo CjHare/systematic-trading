@@ -1,1 +1,1 @@
-call backtest.bat -output elastic_search -start_date 2007-06-01 -end_date 2017-06-01 -data_service "quandl" -data_service_structure "time-series" -equity_dataset "OPEC" -ticker_symbol "ORB" -interest_rate 0 -opening_funds 0 -deposit_amount 200 -deposit_frequency WEEKLY
+call backtest.bat -output elastic_search -start_date 2007-06-01 -end_date 2017-06-01 -data_service "quandl" -data_service_structure "time-series" -ticker_dataset "OPEC" -ticker_symbol "ORB" -interest_rate 0 -opening_funds 0 -deposit_amount 200 -deposit_frequency WEEKLY

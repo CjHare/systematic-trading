@@ -33,7 +33,6 @@ import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
-import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.signal.model.DatedSignal;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
@@ -62,9 +61,6 @@ public class TradingStrategy implements Strategy {
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
-	/** The type of equity being traded. */
-	private final EquityClass type;
-
 	/** The number of decimal places the equity is traded in. */
 	private final int scale;
 
@@ -88,14 +84,12 @@ public class TradingStrategy implements Strategy {
 	        final EntrySize entryPositionSizing,
 	        final Exit exit,
 	        final ExitSize exitPositionSizing,
-	        final EquityClass type,
 	        final int scale ) {
 
 		this.entry = entry;
 		this.exit = exit;
 		this.entryPositionSizing = entryPositionSizing;
 		this.exitPositionSizing = exitPositionSizing;
-		this.type = type;
 		this.scale = scale;
 
 		this.tradingData = new LimitedSizeQueue<>(TradingDayPrices.class, entry.requiredTradingPrices());
@@ -121,13 +115,15 @@ public class TradingStrategy implements Strategy {
 				// TODO do some better encapsulation / refactor
 				final BigDecimal amount = entryPositionSizing.entryPositionSize(cashAccount);
 				final LocalDate tradingDate = data.date();
-				final BigDecimal maximumTransactionCost = fees.cost(amount, type, tradingDate);
+				final BigDecimal maximumTransactionCost = fees.cost(amount, tradingDate);
 				final BigDecimal closingPrice = data.closingPrice().price();
 				final BigDecimal numberOfEquities = amount.subtract(maximumTransactionCost, MATH_CONTEXT)
 				        .divide(closingPrice, MATH_CONTEXT).setScale(scale, RoundingMode.DOWN);
 
-				if (numberOfEquities.compareTo(BigDecimal.ZERO) > 0) { return Optional.of(
-				        new BuyTotalCostTomorrowAtOpeningPriceOrder(amount, type, scale, tradingDate, MATH_CONTEXT)); }
+				if (numberOfEquities.compareTo(BigDecimal.ZERO) > 0) {
+					return Optional
+					        .of(new BuyTotalCostTomorrowAtOpeningPriceOrder(amount, scale, tradingDate, MATH_CONTEXT));
+				}
 			}
 		}
 

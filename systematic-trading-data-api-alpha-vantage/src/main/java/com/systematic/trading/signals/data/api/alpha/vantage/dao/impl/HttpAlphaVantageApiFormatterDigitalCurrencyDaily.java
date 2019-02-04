@@ -23,24 +23,39 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.input;
+package com.systematic.trading.signals.data.api.alpha.vantage.dao.impl;
+
+import javax.ws.rs.client.WebTarget;
+
+import com.systematic.trading.signals.data.api.alpha.vantage.dao.AlphaVantageApiFormatter;
 
 /**
- * The acceptable keys for arguments.
+ * HttpAlphaVantageApiDigitalCurrencyDaily formats the HTTP request for retrieving data from the
+ * daily digital currency to fiat currency API.
  * 
  * @author CJ Hare
  */
-public enum LaunchArgumentKey {
-	DATA_SERVICE,
-	DATA_SERVICE_STRUCTURE,
-	DEPOSIT_AMOUNT,
-	DEPOSIT_FREQUENCY,
-	END_DATE,
-	FILE_BASE_DIRECTORY,
-	INTEREST_RATE,
-	OPENING_FUNDS,
-	OUTPUT_TYPE,
-	START_DATE,
-	TICKER_DATASET,
-	TICKER_SYMBOL;
+public class HttpAlphaVantageApiFormatterDigitalCurrencyDaily implements AlphaVantageApiFormatter {
+
+	private static final String PATH = "query";
+
+	private static final String FUNCTION_SIZE_KEY = "function";
+	private static final String FUNCTION_SIZE_VALUE = "DIGITAL_CURRENCY_DAILY";
+
+	private static final String TICKER_SYMBOL_KEY = "symbol";
+	private static final String MARKET_KEY = "market";
+
+	private static final String API_KEY = "apikey";
+
+	@Override
+	public WebTarget url(
+	        final WebTarget contextRoot,
+	        final String tickerDataset,
+	        final String tickerSymbol,
+	        final String apiKey ) {
+
+		return contextRoot.path(PATH).queryParam(FUNCTION_SIZE_KEY, FUNCTION_SIZE_VALUE)
+		        .queryParam(TICKER_SYMBOL_KEY, tickerSymbol).queryParam(MARKET_KEY, tickerDataset)
+		        .queryParam(API_KEY, apiKey);
+	}
 }

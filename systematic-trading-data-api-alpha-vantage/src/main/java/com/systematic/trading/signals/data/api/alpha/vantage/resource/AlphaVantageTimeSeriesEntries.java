@@ -23,24 +23,29 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.input;
+package com.systematic.trading.signals.data.api.alpha.vantage.resource;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * The acceptable keys for arguments.
- * 
+ * AlphaVantageTimeSeriesEntries contains the generic store of time series entries returned by the
+ * AlphaVantage API.
+ *
  * @author CJ Hare
  */
-public enum LaunchArgumentKey {
-	DATA_SERVICE,
-	DATA_SERVICE_STRUCTURE,
-	DEPOSIT_AMOUNT,
-	DEPOSIT_FREQUENCY,
-	END_DATE,
-	FILE_BASE_DIRECTORY,
-	INTEREST_RATE,
-	OPENING_FUNDS,
-	OUTPUT_TYPE,
-	START_DATE,
-	TICKER_DATASET,
-	TICKER_SYMBOL;
+public abstract class AlphaVantageTimeSeriesEntries extends AlphaVantqgeErrorPossibleResponseResource {
+
+	/** Date keyed price data, on error will be empty. */
+	private Map<String, ? extends TimeSeriesEntry> data = new HashMap<>();
+
+	public Map<String, ? extends TimeSeriesEntry> data() {
+
+		return data;
+	}
+
+	public void data( final Map<String, ? extends TimeSeriesEntry> data ) {
+
+		this.data = data;
+	}
 }

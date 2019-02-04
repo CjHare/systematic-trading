@@ -33,9 +33,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.systematic.trading.model.equity.EquityClass;
-import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
-
 /**
  * Test the fee structure for Vanguard Retail fund, .10% buy / sell spread.
  * 
@@ -67,27 +64,9 @@ public class VanguardFeeStructureTest {
 		verifyFee(9.876536, fee);
 	}
 
-	@Test(expected = UnsupportedEquityClass.class)
-	public void equityClassFuture() {
-
-		feeStructure.cost(BigDecimal.ZERO, EquityClass.FUTURE, 0);
-	}
-
-	@Test(expected = UnsupportedEquityClass.class)
-	public void equityClassForex() {
-
-		feeStructure.cost(BigDecimal.ZERO, EquityClass.FOREX, 0);
-	}
-
-	@Test(expected = UnsupportedEquityClass.class)
-	public void equityClassMetal() {
-
-		feeStructure.cost(BigDecimal.ZERO, EquityClass.METAL, 0);
-	}
-
 	private BigDecimal calculateFee( final double tradeValue, final int inclusiveNumberOfTrades ) {
 
-		return feeStructure.cost(BigDecimal.valueOf(tradeValue), EquityClass.STOCK, inclusiveNumberOfTrades);
+		return feeStructure.cost(BigDecimal.valueOf(tradeValue), inclusiveNumberOfTrades);
 	}
 
 	private void verifyFee( final double expected, final BigDecimal fee ) {

@@ -43,7 +43,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.model.price.OpeningPrice;
 import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
@@ -87,7 +86,6 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 		final int equityDecimalPlaces = 4;
 		order = new BuyTotalCostTomorrowAtOpeningPriceOrder(
 		        TOTAL_COST,
-		        EquityClass.STOCK,
 		        equityDecimalPlaces,
 		        LocalDate.now(),
 		        MathContext.DECIMAL64);
@@ -145,8 +143,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 
 	private void setUpFeeCalculation( final double fee ) {
 
-		when(fees.cost(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
-		        .thenReturn(BigDecimal.valueOf(fee));
+		when(fees.cost(any(BigDecimal.class), any(LocalDate.class))).thenReturn(BigDecimal.valueOf(fee));
 	}
 
 	private void setUpTradingPrices( final double equityPrice ) {

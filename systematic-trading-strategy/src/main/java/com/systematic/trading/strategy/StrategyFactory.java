@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.strategy;
 
-import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.strategy.confirmation.Confirmation;
 import com.systematic.trading.strategy.entry.Entry;
 import com.systematic.trading.strategy.entry.size.EntrySize;
@@ -56,13 +55,7 @@ import com.systematic.trading.strategy.periodic.Periodic;
  */
 public interface StrategyFactory {
 
-	Strategy strategy(
-	        Entry entry,
-	        EntrySize entryPositionSizing,
-	        Exit exit,
-	        ExitSize exitPositionSizing,
-	        EquityClass type,
-	        int scale );
+	Strategy strategy( Entry entry, EntrySize entryPositionSizing, Exit exit, ExitSize exitPositionSizing, int scale );
 
 	Entry entry( Entry leftEntry, Operator op, Entry righEntry );
 

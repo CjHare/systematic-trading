@@ -49,7 +49,7 @@ import com.systematic.trading.backtest.equity.TickerSymbol;
 import com.systematic.trading.backtest.input.BacktestEndDate;
 import com.systematic.trading.backtest.input.BacktestStartDate;
 import com.systematic.trading.backtest.input.DepositFrequency;
-import com.systematic.trading.backtest.input.EquityDataset;
+import com.systematic.trading.backtest.input.TickerDataset;
 import com.systematic.trading.backtest.input.FileBaseOutputDirectory;
 import com.systematic.trading.backtest.input.OutputType;
 
@@ -293,7 +293,7 @@ public class BacktestLaunchArgumentsTest {
 
 	private void setUpEquityDataSet( final String serviceName ) {
 
-		when(equityArguments.equityDataset()).thenReturn(new EquityDataset(serviceName));
+		when(equityArguments.tickerDataset()).thenReturn(new TickerDataset(serviceName));
 	}
 
 	private void outputDirectoryExpectingException( final String expectedMessage ) {
@@ -340,9 +340,9 @@ public class BacktestLaunchArgumentsTest {
 
 	private void verifyEquityDataSet( final String expected ) {
 
-		assertNotNull(parser.equityDataset());
-		assertEquals(expected, parser.equityDataset().dataset());
-		verify(equityArguments, atLeastOnce()).equityDataset();
+		assertNotNull(parser.tickerDataset());
+		assertEquals(expected, parser.tickerDataset().dataset());
+		verify(equityArguments, atLeastOnce()).tickerDataset();
 	}
 
 	private void verifyTickerSymbol( final String expected ) {

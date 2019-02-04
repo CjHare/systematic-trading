@@ -23,24 +23,22 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.input;
+package com.systematic.trading.signals.data.api.alpha.vantage.dao;
+
+import javax.ws.rs.client.WebTarget;
 
 /**
- * The acceptable keys for arguments.
+ * AlphaVantageApiDaoSource defines the format for connecting to the AlphaVantage data sources your
+ * wish to query.
  * 
  * @author CJ Hare
  */
-public enum LaunchArgumentKey {
-	DATA_SERVICE,
-	DATA_SERVICE_STRUCTURE,
-	DEPOSIT_AMOUNT,
-	DEPOSIT_FREQUENCY,
-	END_DATE,
-	FILE_BASE_DIRECTORY,
-	INTEREST_RATE,
-	OPENING_FUNDS,
-	OUTPUT_TYPE,
-	START_DATE,
-	TICKER_DATASET,
-	TICKER_SYMBOL;
+public interface AlphaVantageApiFormatter {
+
+	public WebTarget url(
+	        final WebTarget contextRoot,
+	        final String tickerDataset,
+	        final String tickerSymbol,
+	        final String apiKey );
+
 }

@@ -39,12 +39,12 @@ public enum CommandLineInputLaunchArgumentKey {
 	DEPOSIT_AMOUNT(LaunchArgumentKey.DEPOSIT_AMOUNT, "-deposit_amount"),
 	DEPOSIT_FREQUENCY(LaunchArgumentKey.DEPOSIT_FREQUENCY, "-deposit_frequency"),
 	END_DATE(LaunchArgumentKey.END_DATE, "-end_date"),
-	EQUITY_DATASET(LaunchArgumentKey.EQUITY_DATASET, "-equity_dataset"),
 	FILE_BASE_DIRECTORY(LaunchArgumentKey.FILE_BASE_DIRECTORY, "-output_file_base_directory"),
 	INTEREST_RATE(LaunchArgumentKey.INTEREST_RATE, "-interest_rate"),
 	OPENING_FUNDS(LaunchArgumentKey.OPENING_FUNDS, "-opening_funds"),
 	OUTPUT_TYPE(LaunchArgumentKey.OUTPUT_TYPE, "-output"),
 	START_DATE(LaunchArgumentKey.START_DATE, "-start_date"),
+	TICKER_DATASET(LaunchArgumentKey.TICKER_DATASET, "-ticker_dataset"),
 	TICKER_SYMBOL(LaunchArgumentKey.TICKER_SYMBOL, "-ticker_symbol");
 
 	private final String cli;

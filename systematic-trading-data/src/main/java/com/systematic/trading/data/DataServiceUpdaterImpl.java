@@ -90,7 +90,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 	@Override
 	public void get(
-	        final String equityDataset,
+	        final String tickerDataset,
 	        final String tickerSymbol,
 	        final LocalDate startDateInclusive,
 	        final LocalDate endDateExclusive ) throws CannotRetrieveDataException {
@@ -98,7 +98,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		// Ensure there's a table for the data
 		tradingDayPricesDao.createTableIfAbsent(tickerSymbol);
 
-		lodgeNeededHistoryRetrievalRequests(equityDataset, tickerSymbol, startDateInclusive, endDateExclusive);
+		lodgeNeededHistoryRetrievalRequests(tickerDataset, tickerSymbol, startDateInclusive, endDateExclusive);
 
 		final List<HistoryRetrievalRequest> outstandingRequests = outstandingHistoryRetrievalRequests(tickerSymbol);
 
@@ -130,7 +130,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 		for (final HistoryRetrievalRequest request : requests) {
 
-			final String equityDataset = request.equityDataset();
+			final String tickerDataset = request.tickerDataset();
 			final String tickerSymbol = request.tickerSymbol();
 			final LocalDate startDateInclusive = request.startDateInclusive().toLocalDate();
 			final LocalDate endDateExclusive = request.endDateExclusive().toLocalDate();
@@ -139,7 +139,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 				try {
 					// Pull the data from the Stock API
 					TradingDayPrices[] tradingData = api.stockData(
-					        equityDataset,
+							tickerDataset,
 					        tickerSymbol,
 					        startDateInclusive,
 					        endDateExclusive,
@@ -207,12 +207,12 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	}
 
 	private void lodgeNeededHistoryRetrievalRequests(
-	        final String equityDataset,
+	        final String tickerDataset,
 	        final String tickerSymbol,
 	        final LocalDate startDateInclusive,
 	        final LocalDate endDateExclusive ) {
 
-		lodge(merge(excludeUncessary(slice(equityDataset, tickerSymbol, startDateInclusive, endDateExclusive))));
+		lodge(merge(excludeUncessary(slice(tickerDataset, tickerSymbol, startDateInclusive, endDateExclusive))));
 	}
 
 	private void lodge( final List<HistoryRetrievalRequest> requests ) {
@@ -239,12 +239,12 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	}
 
 	private List<HistoryRetrievalRequest> slice(
-	        final String equityDataset,
+	        final String tickerDataset,
 	        final String tickerSymbol,
 	        final LocalDate startDateInclusive,
 	        final LocalDate endDateExclusive ) {
 
-		return historyRetrievalRequestSlicer.slice(equityDataset, tickerSymbol, startDateInclusive, endDateExclusive);
+		return historyRetrievalRequestSlicer.slice(tickerDataset, tickerSymbol, startDateInclusive, endDateExclusive);
 	}
 
 	private List<HistoryRetrievalRequest> excludeUncessary( final List<HistoryRetrievalRequest> requests ) {

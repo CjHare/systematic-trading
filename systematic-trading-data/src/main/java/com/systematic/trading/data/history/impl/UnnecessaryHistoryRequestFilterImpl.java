@@ -208,7 +208,7 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 		        "{}: {}, {}, {} (inclusive) - {} (exclusive)",
 		        prefix,
 		        request.tickerSymbol(),
-		        request.equityDataset(),
+		        request.tickerDataset(),
 		        request.startDateInclusive().toLocalDate(),
 		        request.endDateExclusive().toLocalDate());
 	}

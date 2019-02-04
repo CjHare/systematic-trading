@@ -45,33 +45,29 @@ import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.signals.data.api.alpha.vantage.converter.AlphaVantageResponseConverter;
 import com.systematic.trading.signals.data.api.alpha.vantage.dao.AlphaVantageApiDao;
-import com.systematic.trading.signals.data.api.alpha.vantage.resource.AlphaVantageResponseResource;
+import com.systematic.trading.signals.data.api.alpha.vantage.dao.AlphaVantageApiFormatter;
+import com.systematic.trading.signals.data.api.alpha.vantage.resource.AlphaVantageTimeSeriesDailyResponseResource;
+import com.systematic.trading.signals.data.api.alpha.vantage.resource.AlphaVantageTimeSeriesDigitalCurrencyDailyAudResource;
+import com.systematic.trading.signals.data.api.alpha.vantage.resource.AlphaVantageTimeSeriesEntries;
+import com.systematic.trading.signals.data.api.alpha.vantage.resource.AlphaVantqgeErrorPossibleResponseResource;
 
 /**
  * HttpAlphaVantageApiDao retrieves time series data from the Alpha Vantage API.
  * 
  * @author CJ Hare
  */
-public class HttpAlphaVantageApiDao implements AlphaVantageApiDao {
+public class HttpAlphaVantageApiDao<T> implements AlphaVantageApiDao {
 
 	/** Class' little logger, */
 	private static final Logger LOG = LogManager.getLogger(HttpAlphaVantageApiDao.class);
-
-	private static final String PATH = "query";
-
-	private static final String FUNCTION_SIZE_KEY = "function";
-	private static final String FUNCTION_SIZE_VALUE = "TIME_SERIES_DAILY";
-
-	private static final String OUTPUT_SIZE_KEY = "outputsize";
-	private static final String OUTPUT_SIZE_VALUE = "full";
-
-	private static final String TICKER_SYMBOL_KEY = "symbol";
-	private static final String API_KEY = "apikey";
 
 	private static final int HTTP_OK = 200;
 
 	/** Converts the resource into the Systematic Trading domain object. */
 	private final AlphaVantageResponseConverter converter;
+
+	/** Formatter for the URI of request to make to AlphaVantage. */
+	private final AlphaVantageApiFormatter apiFormatter;
 
 	/** Base one, number of attempts per a Alpha Vantage call. */
 	private final int numberOfRetries;
@@ -87,6 +83,7 @@ public class HttpAlphaVantageApiDao implements AlphaVantageApiDao {
 
 	public HttpAlphaVantageApiDao(
 	        final EquityApiConfiguration configuration,
+	        final AlphaVantageApiFormatter apiFormatter,
 	        final AlphaVantageResponseConverter converter ) {
 
 		this.numberOfRetries = configuration.numberOfRetries();
@@ -99,44 +96,43 @@ public class HttpAlphaVantageApiDao implements AlphaVantageApiDao {
 		this.root = ClientBuilder.newClient(clientConfig).target(configuration.endpoint());
 
 		this.apiKey = configuration.apiKey();
+		this.apiFormatter = apiFormatter;
 		this.converter = converter;
 	}
 
 	@Override
 	public TradingDayPrices[] get(
-	        final String equityDataset,
+	        final String tickerDataset,
 	        final String tickerSymbol,
 	        final LocalDate startDateInclusive,
 	        final LocalDate endDateExclusive,
 	        final BlockingEventCount throttler ) throws CannotRetrieveDataException {
 
-		final WebTarget url = url(equityDataset, tickerSymbol);
+		final WebTarget url = apiFormatter.url(root, tickerDataset, tickerSymbol, apiKey);
 		final Response response = get(url, throttler);
-		final AlphaVantageResponseResource resource = response.readEntity(AlphaVantageResponseResource.class);
+
+		final AlphaVantageTimeSeriesEntries resource;
+		if ("AUD".equalsIgnoreCase(tickerDataset)) {
+			resource = response.readEntity(AlphaVantageTimeSeriesDigitalCurrencyDailyAudResource.class);
+		} else {
+			resource = response.readEntity(AlphaVantageTimeSeriesDailyResponseResource.class);
+		}
 
 		errorCheck(url, resource);
 
-		return converter.convert(tickerSymbol, startDateInclusive, endDateExclusive, resource.dataset());
+		return converter.convert(tickerSymbol, startDateInclusive, endDateExclusive, resource.data());
 	}
 
-	private void errorCheck( final WebTarget url, final AlphaVantageResponseResource resource )
+	private void errorCheck( final WebTarget url, final AlphaVantqgeErrorPossibleResponseResource resource )
 	        throws CannotRetrieveDataException {
 
 		final Optional<String> error = resource.error();
-		if (error.isPresent()) { throw new CannotRetrieveDataException(
-		        String.format("Get call failed: %s%n%s", url, error.get())); }
+		if (error.isPresent()) {
+			throw new CannotRetrieveDataException(String.format("Get call failed: %s%n%s", url, error.get()));
+		}
 	}
 
 	// TODO duplicate code with HttpQuandlApiDao -> utility
-
-	private WebTarget url( final String equityDataset, final String tickerSymbol ) {
-
-		return root.path(PATH).queryParam(FUNCTION_SIZE_KEY, FUNCTION_SIZE_VALUE)
-		        .queryParam(OUTPUT_SIZE_KEY, OUTPUT_SIZE_VALUE)
-		        .queryParam(TICKER_SYMBOL_KEY, String.format("%s.%s", tickerSymbol, equityDataset))
-		        .queryParam(API_KEY, apiKey);
-	}
-
 	private Response get( final WebTarget url, final BlockingEventCount throttler ) throws CannotRetrieveDataException {
 
 		int attempt = 1;

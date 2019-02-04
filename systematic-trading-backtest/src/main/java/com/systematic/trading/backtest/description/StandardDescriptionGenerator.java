@@ -200,7 +200,7 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 
 	private String equity( final EquityConfiguration equity ) {
 
-		return equity.gquityIdentity().tickerSymbol();
+		return equity.equityIdentity().tickerSymbol();
 	}
 
 	private String brokerage( final BrokerageTransactionFeeStructure brokerage ) {

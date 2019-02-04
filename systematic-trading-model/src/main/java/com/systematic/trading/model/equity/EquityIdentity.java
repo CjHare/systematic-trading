@@ -32,9 +32,6 @@ package com.systematic.trading.model.equity;
  */
 public class EquityIdentity {
 
-	/** How the equity is treated. */
-	private final EquityClass type;
-
 	/** Symbol used to identify the equity in the source of the trading data. */
 	private final String tickerSymbol;
 
@@ -44,27 +41,14 @@ public class EquityIdentity {
 	/**
 	 * @param tickerSymbol
 	 *            identity of the equity within the source of the trading data.
-	 * @param type
-	 *            determines how the equity is treated.
 	 * @param scale
 	 *            the number of decimal places for the units that the equity may be traded in, zero
 	 *            being whole units only.
 	 */
-	public EquityIdentity( final String tickerSymbol, final EquityClass type, final int scale ) {
+	public EquityIdentity( final String tickerSymbol, final int scale ) {
 
 		this.tickerSymbol = tickerSymbol;
 		this.scale = scale;
-		this.type = type;
-	}
-
-	/**
-	 * Retrieves the type of equity.
-	 * 
-	 * @return how to treat the equity.
-	 */
-	public EquityClass type() {
-
-		return type;
 	}
 
 	/**

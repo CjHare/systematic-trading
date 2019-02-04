@@ -23,24 +23,30 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.input;
+package com.systematic.trading.signals.data.api.alpha.vantage.resource;
+
+import java.util.Optional;
+
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
- * The acceptable keys for arguments.
+ * ErrorPossibleResponseResource is for resources that have the possibility of containing errors.
  * 
  * @author CJ Hare
  */
-public enum LaunchArgumentKey {
-	DATA_SERVICE,
-	DATA_SERVICE_STRUCTURE,
-	DEPOSIT_AMOUNT,
-	DEPOSIT_FREQUENCY,
-	END_DATE,
-	FILE_BASE_DIRECTORY,
-	INTEREST_RATE,
-	OPENING_FUNDS,
-	OUTPUT_TYPE,
-	START_DATE,
-	TICKER_DATASET,
-	TICKER_SYMBOL;
+public abstract class AlphaVantqgeErrorPossibleResponseResource {
+
+	/** Optional error message, only present on failure */
+	private String error;
+
+	public Optional<String> error() {
+
+		return error == null ? Optional.empty() : Optional.of(error);
+	}
+
+	@JsonSetter("Error Message")
+	public void error( final String error ) {
+
+		this.error = error;
+	}
 }

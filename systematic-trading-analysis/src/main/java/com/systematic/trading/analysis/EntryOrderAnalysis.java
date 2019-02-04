@@ -80,13 +80,12 @@ import com.systematic.trading.input.CommandLineInputLaunchArgumentParser;
 import com.systematic.trading.input.DataServiceLaunchArgument;
 import com.systematic.trading.input.EquityApiLaunchArgumentFactory;
 import com.systematic.trading.input.EquityArguments;
-import com.systematic.trading.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.input.LaunchArgument;
 import com.systematic.trading.input.LaunchArgumentKey;
 import com.systematic.trading.input.LaunchArgumentValidator;
 import com.systematic.trading.input.OpeningFundsLaunchArgument;
+import com.systematic.trading.input.TickerDatasetLaunchArgument;
 import com.systematic.trading.input.TickerSymbolLaunchArgument;
-import com.systematic.trading.model.equity.EquityClass;
 
 /**
  * An analysis to generate buy signals to execute on a daily basis, a specialized version of a back
@@ -121,7 +120,7 @@ public class EntryOrderAnalysis {
 
 		final AnalysisLaunchArguments launchArgs = new AnalysisLaunchArguments(
 		        new EquityArguments(
-		                new EquityDatasetLaunchArgument(validator),
+		                new TickerDatasetLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator),
 		                arguments),
 		        new OpeningFundsLaunchArgument(validator),
@@ -162,7 +161,7 @@ public class EntryOrderAnalysis {
 
 	private EquityConfiguration equity( final AnalysisLaunchArguments launchArgs ) {
 
-		return new EquityConfiguration(launchArgs.equityDataset(), launchArgs.tickerSymbol(), EquityClass.STOCK);
+		return new EquityConfiguration(launchArgs.tickerDataset(), launchArgs.tickerSymbol());
 	}
 
 	private void run( final AnalysisLaunchArguments launchArgs ) throws ServiceException {

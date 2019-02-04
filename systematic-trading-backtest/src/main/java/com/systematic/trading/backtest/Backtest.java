@@ -73,8 +73,8 @@ public class Backtest {
 		logWarmUpPeriod(warmUp);
 
 		final TickerSymbolTradingData tradingData = tradingData(
-		        equity.equityDataset(),
-		        equity.gquityIdentity(),
+		        equity.tickerDataset(),
+		        equity.equityIdentity(),
 		        dates,
 		        warmUp);
 
@@ -82,7 +82,7 @@ public class Backtest {
 	}
 
 	private TickerSymbolTradingData tradingData(
-	        final String equityDataset,
+	        final String tickerDataset,
 	        final EquityIdentity equity,
 	        final BacktestSimulationDates simulationDate,
 	        final Period warmUp ) throws ServiceException {
@@ -96,7 +96,7 @@ public class Backtest {
 		final LocalDate retrievalStartDate = startDateInclusive.withDayOfMonth(1);
 
 		// Retrieve and cache data range from remote data source
-		dataServiceUpdater.get(equityDataset, equity.tickerSymbol(), retrievalStartDate, endDateExclusive);
+		dataServiceUpdater.get(tickerDataset, equity.tickerSymbol(), retrievalStartDate, endDateExclusive);
 
 		// Retrieve from local cache the desired data range
 		final TradingDayPrices[] prices = dataService.get(equity.tickerSymbol(), startDateInclusive, endDateExclusive);

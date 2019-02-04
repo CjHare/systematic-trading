@@ -44,7 +44,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.equity.TickerSymbol;
-import com.systematic.trading.backtest.input.EquityDataset;
+import com.systematic.trading.backtest.input.TickerDataset;
 
 /**
  * Unit testing for the expected behavior of the AnalysisLaunchArguments.
@@ -153,7 +153,7 @@ public class AnalysisLaunchArgumentsTest {
 
 	private void setUpEquityDataSet( final String serviceName ) {
 
-		when(equityArguments.equityDataset()).thenReturn(new EquityDataset(serviceName));
+		when(equityArguments.tickerDataset()).thenReturn(new TickerDataset(serviceName));
 	}
 
 	private void setUpOpeningFundsException() {
@@ -164,9 +164,9 @@ public class AnalysisLaunchArgumentsTest {
 
 	private void verifyEquityDataSet( final String expected ) {
 
-		assertNotNull(parser.equityDataset());
-		assertEquals(expected, parser.equityDataset().dataset());
-		verify(equityArguments, atLeastOnce()).equityDataset();
+		assertNotNull(parser.tickerDataset());
+		assertEquals(expected, parser.tickerDataset().dataset());
+		verify(equityArguments, atLeastOnce()).tickerDataset();
 	}
 
 	private void verifyTickerSymbol( final String expected ) {

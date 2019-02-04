@@ -29,7 +29,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import com.systematic.trading.backtest.equity.TickerSymbol;
-import com.systematic.trading.backtest.input.EquityDataset;
+import com.systematic.trading.backtest.input.TickerDataset;
 
 /**
  * An aggregation facade for parsing the arguments given on launch, their validation and type
@@ -59,9 +59,9 @@ public class AnalysisLaunchArguments {
 		return equityArguments.tickerSymbol();
 	}
 
-	public EquityDataset equityDataset() {
+	public TickerDataset tickerDataset() {
 
-		return equityArguments.equityDataset();
+		return equityArguments.tickerDataset();
 	}
 
 	public BigDecimal openingFunds() {

@@ -23,24 +23,35 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.model.equity;
+package com.systematic.trading.input;
+
+import java.util.Map;
+
+import com.systematic.trading.backtest.input.TickerDataset;
 
 /**
- * The different ways the equity classes are viewed by brokers.
+ * Launch argument parser and validation for the equity dataset key value pairing.
  * 
  * @author CJ Hare
  */
-public enum EquityClass {
-    // TODO move this into a package related to the broker (as that's who uses it)
+public class TickerDatasetLaunchArgument implements LaunchArgument<TickerDataset> {
 
-    // TODO QuityClass is related to the brokerage, keep the enum, but inject the equity with the
-    // ticker symbol
-	BOND,
-	CFD,
-	FUTURE,
-	FOREX,
-	METAL,
-	OPTION,
-	STOCK,
-	WARRENT,
+	/** Provides validation for the launch argument value. */
+	private final LaunchArgumentValidator validator;
+
+	public TickerDatasetLaunchArgument( final LaunchArgumentValidator validator ) {
+
+		this.validator = validator;
+	}
+
+	@Override
+	public TickerDataset get( final Map<LaunchArgumentKey, String> arguments ) {
+
+		final String dataset = arguments.get(LaunchArgumentKey.TICKER_DATASET);
+
+		validator.validate(dataset, "%s argument is not present", LaunchArgumentKey.TICKER_DATASET);
+		validator.validateNotEmpty(dataset, "%s argument cannot be empty", LaunchArgumentKey.TICKER_DATASET);
+
+		return new TickerDataset(dataset);
+	}
 }

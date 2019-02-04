@@ -23,35 +23,28 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.input;
+package com.systematic.trading.signals.data.api.alpha.vantage.resource;
 
 import java.util.Map;
 
-import com.systematic.trading.backtest.input.EquityDataset;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
- * Launch argument parser and validation for the equity dataset key value pairing.
+ * Resource for a trading day object, the leaf return type from AlphaVantage API in Australian
+ * dollars..
  * 
  * @author CJ Hare
  */
-public class EquityDatasetLaunchArgument implements LaunchArgument<EquityDataset> {
+@JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class AlphaVantageTimeSeriesDigitalCurrencyDailyAudResource extends AlphaVantageTimeSeriesEntries {
 
-	/** Provides validation for the launch argument value. */
-	private final LaunchArgumentValidator validator;
+	@JsonSetter("Time Series (Digital Currency Daily)")
+	public void dataset( final Map<String, TimeSeriesDigitalCurrencyDailyAudResource> dataset ) {
 
-	public EquityDatasetLaunchArgument( final LaunchArgumentValidator validator ) {
-
-		this.validator = validator;
-	}
-
-	@Override
-	public EquityDataset get( final Map<LaunchArgumentKey, String> arguments ) {
-
-		final String dataset = arguments.get(LaunchArgumentKey.EQUITY_DATASET);
-
-		validator.validate(dataset, "%s argument is not present", LaunchArgumentKey.EQUITY_DATASET);
-		validator.validateNotEmpty(dataset, "%s argument cannot be empty", LaunchArgumentKey.EQUITY_DATASET);
-
-		return new EquityDataset(dataset);
+		super.data(dataset);
 	}
 }

@@ -34,7 +34,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.strategy.confirmation.Confirmation;
 import com.systematic.trading.strategy.entry.Entry;
 import com.systematic.trading.strategy.entry.TradingStrategyConfirmationEntry;
@@ -82,8 +81,7 @@ public class TradingStrategyFactoryTest {
 		final Exit exit = mock(Exit.class);
 		final ExitSize exitPositionSizing = mock(ExitSize.class);
 
-		final Strategy strategy = factory
-		        .strategy(entry, entryPositionSizing, exit, exitPositionSizing, EquityClass.STOCK, 2);
+		final Strategy strategy = factory.strategy(entry, entryPositionSizing, exit, exitPositionSizing, 2);
 
 		assertEquals(TradingStrategy.class, strategy.getClass());
 	}

@@ -56,7 +56,6 @@ import com.systematic.trading.input.DepositAmountLaunchArgument;
 import com.systematic.trading.input.DepositFrequencyLaunchArgument;
 import com.systematic.trading.input.EndDateLaunchArgument;
 import com.systematic.trading.input.EquityArguments;
-import com.systematic.trading.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.input.FileBaseDirectoryLaunchArgument;
 import com.systematic.trading.input.InterestRateLaunchArgument;
 import com.systematic.trading.input.LaunchArgumentKey;
@@ -64,6 +63,7 @@ import com.systematic.trading.input.LaunchArgumentValidator;
 import com.systematic.trading.input.OpeningFundsLaunchArgument;
 import com.systematic.trading.input.OutputLaunchArgument;
 import com.systematic.trading.input.StartDateLaunchArgument;
+import com.systematic.trading.input.TickerDatasetLaunchArgument;
 import com.systematic.trading.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
 
@@ -83,7 +83,7 @@ public abstract class BaseTrial {
 		return new BacktestLaunchArguments(
 		        new OutputLaunchArgument(validator),
 		        new EquityArguments(
-		                new EquityDatasetLaunchArgument(validator),
+		                new TickerDatasetLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator),
 		                arguments),
 		        new InterestRateLaunchArgument(validator),

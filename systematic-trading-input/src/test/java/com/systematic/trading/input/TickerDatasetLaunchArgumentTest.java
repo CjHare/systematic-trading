@@ -47,7 +47,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.input.EquityDataset;
+import com.systematic.trading.backtest.input.TickerDataset;
 
 /**
  * Testing for the optional DataServiceTypeLaunchArgument
@@ -55,22 +55,22 @@ import com.systematic.trading.backtest.input.EquityDataset;
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class EquityDatasetLaunchArgumentTest {
+public class TickerDatasetLaunchArgumentTest {
 
 	private static final String ERROR_MESSAGE = "%s argument is not present";
-	private static final LaunchArgumentKey KEY = LaunchArgumentKey.EQUITY_DATASET;
+	private static final LaunchArgumentKey KEY = LaunchArgumentKey.TICKER_DATASET;
 	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";
 
 	@Mock
 	private LaunchArgumentValidator validator;
 
 	/** Launch argument parser instance being tested. */
-	private EquityDatasetLaunchArgument argument;
+	private TickerDatasetLaunchArgument argument;
 
 	@Before
 	public void setUp() {
 
-		argument = new EquityDatasetLaunchArgument(validator);
+		argument = new TickerDatasetLaunchArgument(validator);
 	}
 
 	@Test
@@ -79,7 +79,7 @@ public class EquityDatasetLaunchArgumentTest {
 		final String expectedSymbol = "ServiceType";
 		final Map<LaunchArgumentKey, String> launchArguments = setUpArguments(expectedSymbol);
 
-		final EquityDataset symbol = equityDataset(launchArguments);
+		final TickerDataset symbol = tickerDataset(launchArguments);
 
 		verifyEquityDataset(expectedSymbol, symbol);
 	}
@@ -89,7 +89,7 @@ public class EquityDatasetLaunchArgumentTest {
 
 		setUpValidatorException();
 
-		equityDatasetExpectingException(VALIDATOR_EXCEPTION_MESSAGE, setUpArguments(""));
+		tickerDatasetExpectingException(VALIDATOR_EXCEPTION_MESSAGE, setUpArguments(""));
 
 		verifyValidationExceptionOnValidate("");
 	}
@@ -99,7 +99,7 @@ public class EquityDatasetLaunchArgumentTest {
 
 		setUpValidatorException();
 
-		equityDatasetExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<LaunchArgumentKey, String>());
+		tickerDatasetExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<LaunchArgumentKey, String>());
 
 		verifyValidationExceptionOnValidate(null);
 	}
@@ -116,24 +116,24 @@ public class EquityDatasetLaunchArgumentTest {
 		verifyNoMoreInteractions(validator);
 	}
 
-	private EquityDataset equityDataset( final Map<LaunchArgumentKey, String> launchArguments ) {
+	private TickerDataset tickerDataset( final Map<LaunchArgumentKey, String> launchArguments ) {
 
 		return argument.get(launchArguments);
 	}
 
-	private void verifyEquityDataset( final String expected, final EquityDataset actual ) {
+	private void verifyEquityDataset( final String expected, final TickerDataset actual ) {
 
 		assertNotNull(actual);
 		assertNotNull(actual.dataset());
 		assertTrue(StringUtils.equals(expected, actual.dataset()));
 	}
 
-	private void equityDatasetExpectingException(
+	private void tickerDatasetExpectingException(
 	        final String expectedMessage,
 	        final Map<LaunchArgumentKey, String> launchArguments ) {
 
 		try {
-			equityDataset(launchArguments);
+			tickerDataset(launchArguments);
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(expectedMessage, e.getMessage());
@@ -143,7 +143,7 @@ public class EquityDatasetLaunchArgumentTest {
 	private Map<LaunchArgumentKey, String> setUpArguments( final String value ) {
 
 		final Map<LaunchArgumentKey, String> arguments = new HashMap<>();
-		arguments.put(LaunchArgumentKey.EQUITY_DATASET, value);
+		arguments.put(LaunchArgumentKey.TICKER_DATASET, value);
 		return arguments;
 	}
 }
