@@ -28,18 +28,22 @@ package com.systematic.trading.signals.data.api.alpha.vantage.resource;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
- * Root response object for the Alpha Vantage object chain.
+ * Resource for a trading day object, the leaf return type from AlphaVantage API in Australian
+ * dollars..
  * 
  * @author CJ Hare
  */
+@JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AlphaVantageTimeSeriesDailyResponseResource extends AlphaVantageTimeSeriesEntries {
+public class AlphaVantageTimeSeriesDigitalCurrencyDailyAudResource extends AlphaVantageTimeSeriesEntries {
 
-	@JsonSetter("Time Series (Daily)")
-	public void dataset( final Map<String, TimeSeriesDailyResource> dataset ) {
+	@JsonSetter("Time Series (Digital Currency Daily)")
+	public void dataset( final Map<String, TimeSeriesDigitalCurrencyDailyAudResource> dataset ) {
 
 		super.data(dataset);
 	}

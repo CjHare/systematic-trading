@@ -25,72 +25,18 @@
  */
 package com.systematic.trading.signals.data.api.alpha.vantage.resource;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonSetter;
-
 /**
- * Resource for a trading day object, the leaf return type from AlphaVantage API in Australian
- * dollars..
+ * Resource for a trading day object.
  * 
  * @author CJ Hare
  */
-@JsonInclude(Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class DigitalCurrencyDailyAudResource {
+public interface TimeSeriesEntry {
 
-	private String open;
-	private String high;
-	private String low;
-	private String close;
+	String open();
 
-	@JsonGetter("1a. open (AUD)")
-	public String open() {
+	String high();
 
-		return open;
-	}
+	String low();
 
-	@JsonSetter("1a. open (AUD)")
-	public void open( final String open ) {
-
-		this.open = open;
-	}
-
-	@JsonGetter("2a. high (AUD)")
-	public String high() {
-
-		return high;
-	}
-
-	@JsonSetter("2a. high (AUD)")
-	public void high( final String high ) {
-
-		this.high = high;
-	}
-
-	@JsonGetter("3a. low (AUD)")
-	public String low() {
-
-		return low;
-	}
-
-	@JsonSetter("3a. low (AUD)")
-	public void low( final String low ) {
-
-		this.low = low;
-	}
-
-	@JsonGetter("4a. close (AUD)")
-	public String close() {
-
-		return close;
-	}
-
-	@JsonSetter("4a. close (AUD)")
-	public void close( final String close ) {
-
-		this.close = close;
-	}
+	String close();
 }

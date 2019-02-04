@@ -25,28 +25,27 @@
  */
 package com.systematic.trading.signals.data.api.alpha.vantage.resource;
 
-import java.util.Optional;
-
-import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * ErrorPossibleResponseResource is for resources that have the possibility of containing errors.
- * 
+ * AlphaVantageTimeSeriesEntries contains the generic store of time series entries returned by the
+ * AlphaVantage API.
+ *
  * @author CJ Hare
  */
-public abstract class ErrorPossibleResponseResource {
+public abstract class AlphaVantageTimeSeriesEntries extends AlphaVantqgeErrorPossibleResponseResource {
 
-	/** Optional error message, only present on failure */
-	private Optional<String> error = Optional.empty();
+	/** Date keyed price data, on error will be empty. */
+	private Map<String, ? extends TimeSeriesEntry> data = new HashMap<>();
 
-	public Optional<String> error() {
+	public Map<String, ? extends TimeSeriesEntry> data() {
 
-		return error;
+		return data;
 	}
 
-	@JsonSetter("Error Message")
-	public void error( final String error ) {
+	public void data( final Map<String, ? extends TimeSeriesEntry> data ) {
 
-		this.error = Optional.of(error);
+		this.data = data;
 	}
 }

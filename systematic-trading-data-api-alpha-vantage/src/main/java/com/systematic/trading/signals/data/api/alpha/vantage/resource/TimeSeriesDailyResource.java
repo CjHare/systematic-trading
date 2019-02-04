@@ -38,13 +38,14 @@ import com.fasterxml.jackson.annotation.JsonSetter;
  */
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TimeSeriesDailyResource {
+public class TimeSeriesDailyResource implements TimeSeriesEntry {
 
 	private String open;
 	private String high;
 	private String low;
 	private String close;
 
+	@Override
 	@JsonGetter("1. open")
 	public String open() {
 
@@ -57,6 +58,7 @@ public class TimeSeriesDailyResource {
 		this.open = open;
 	}
 
+	@Override
 	@JsonGetter("2. high")
 	public String high() {
 
@@ -69,6 +71,7 @@ public class TimeSeriesDailyResource {
 		this.high = high;
 	}
 
+	@Override
 	@JsonGetter("3. low")
 	public String low() {
 
@@ -81,6 +84,7 @@ public class TimeSeriesDailyResource {
 		this.low = low;
 	}
 
+	@Override
 	@JsonGetter("4. close")
 	public String close() {
 

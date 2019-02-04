@@ -34,7 +34,7 @@ import java.util.TreeMap;
 
 import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.model.price.impl.TradingDayPricesImpl;
-import com.systematic.trading.signals.data.api.alpha.vantage.resource.TimeSeriesDailyResource;
+import com.systematic.trading.signals.data.api.alpha.vantage.resource.TimeSeriesEntry;
 
 /**
  * AlphaVantageResponseConverter converts the standard response from the Alpha Vantage API into the
@@ -51,16 +51,16 @@ public class AlphaVantageResponseConverter {
 	        final String tickerSymbol,
 	        final LocalDate startDateInclusive,
 	        final LocalDate endDateExclusive,
-	        final Map<String, TimeSeriesDailyResource> dataset ) {
+	        final Map<String, ? extends TimeSeriesEntry> dataset ) {
 
 		final TreeMap<LocalDate, TradingDayPrices> prices = new TreeMap<>();
 
-		for (final Map.Entry<String, TimeSeriesDailyResource> dayPrices : dataset.entrySet()) {
+		for (final Map.Entry<String, ? extends TimeSeriesEntry> dayPrices : dataset.entrySet()) {
 
 			final LocalDate tradingDate = tradingDate(dayPrices.getKey());
 
 			if (isWithinRange(startDateInclusive, endDateExclusive, tradingDate)) {
-				final TimeSeriesDailyResource tradingDay = dayPrices.getValue();
+				final TimeSeriesEntry tradingDay = dayPrices.getValue();
 
 				prices.put(
 				        tradingDate,
@@ -95,4 +95,3 @@ public class AlphaVantageResponseConverter {
 		return new BigDecimal(price).setScale(TWO_DECIMAL_PLACES, RoundingMode.HALF_EVEN);
 	}
 }
- 

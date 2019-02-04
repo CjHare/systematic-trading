@@ -25,22 +25,75 @@
  */
 package com.systematic.trading.signals.data.api.alpha.vantage.resource;
 
-import java.util.Map;
-
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
- * Root response object for the Alpha Vantage object chain.
+ * Resource for a trading day object, the leaf return type from AlphaVantage API.
  * 
  * @author CJ Hare
  */
+@JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AlphaVantageTimeSeriesDailyResponseResource extends AlphaVantageTimeSeriesEntries {
+public class TimeSeriesDigitalCurrencyDailyAudResource implements TimeSeriesEntry {
 
-	@JsonSetter("Time Series (Daily)")
-	public void dataset( final Map<String, TimeSeriesDailyResource> dataset ) {
+	private String open;
+	private String high;
+	private String low;
+	private String close;
 
-		super.data(dataset);
+	@Override
+	@JsonGetter("1a. open (AUD)")
+	public String open() {
+
+		return open;
+	}
+
+	@JsonSetter("1a. open (AUD)")
+	public void open( final String open ) {
+
+		this.open = open;
+	}
+
+	@Override
+	@JsonGetter("2a. high (AUD)")
+	public String high() {
+
+		return high;
+	}
+
+	@JsonSetter("2a. high (AUD)")
+	public void high( final String high ) {
+
+		this.high = high;
+	}
+
+	@Override
+	@JsonGetter("3a. low (AUD)")
+	public String low() {
+
+		return low;
+	}
+
+	@JsonSetter("3a. low (AUD)")
+	public void low( final String low ) {
+
+		this.low = low;
+	}
+
+	@Override
+	@JsonGetter("4a. close (AUD)")
+	public String close() {
+
+		return close;
+	}
+
+	@JsonSetter("4a. close (AUD)")
+	public void close( final String close ) {
+
+		this.close = close;
 	}
 }
