@@ -74,7 +74,8 @@ public class BacktestSimulationDates {
 	private void validateDates( final LocalDate startDate, final LocalDate endDate )
 	        throws InvalidSimulationDatesException {
 
-		if (startDate.isAfter(
-		        endDate)) { throw new InvalidSimulationDatesException(String.format("%s %s", startDate, endDate)); }
+		if (startDate.isAfter(endDate)) {
+			throw new InvalidSimulationDatesException(String.format("%s %s", startDate, endDate));
+		}
 	}
 }

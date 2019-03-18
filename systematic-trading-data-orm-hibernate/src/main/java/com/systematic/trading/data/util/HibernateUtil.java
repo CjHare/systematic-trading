@@ -80,7 +80,8 @@ public class HibernateUtil {
 		session.beginTransaction();
 
 		// Just in case the database is present but not 'connected'
-		if (!session.isConnected()) { throw new ExceptionInInitializerError("Failed to connect to database");
+		if (!session.isConnected()) {
+			throw new ExceptionInInitializerError("Failed to connect to database");
 
 		}
 

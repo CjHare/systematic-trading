@@ -65,6 +65,7 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 	private Date endDateExclusive;
 
 	public HibernateHistoryRetrievalRequest() {
+
 		// Default constructor used by Hiberante
 	}
 

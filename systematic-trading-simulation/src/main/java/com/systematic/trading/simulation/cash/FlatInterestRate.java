@@ -70,8 +70,10 @@ public class FlatInterestRate implements InterestRate {
 
 		if (days == 0) { return BigDecimal.ZERO; }
 
-		if (isLeapYear) { return dailyInterestRateLeapYear.multiply(funds, mathContext)
-		        .multiply(BigDecimal.valueOf(days), mathContext); }
+		if (isLeapYear) {
+			return dailyInterestRateLeapYear.multiply(funds, mathContext)
+			        .multiply(BigDecimal.valueOf(days), mathContext);
+		}
 
 		return dailyInterestRate.multiply(funds, mathContext).multiply(BigDecimal.valueOf(days), mathContext);
 	}

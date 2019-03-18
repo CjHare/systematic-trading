@@ -112,8 +112,9 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	private void ensureAllRetrievalRequestsProcessed( final String tickerSymbol ) throws CannotRetrieveDataException {
 
 		final List<HistoryRetrievalRequest> remainingRequests = outstandingHistoryRetrievalRequests(tickerSymbol);
-		if (!remainingRequests
-		        .isEmpty()) { throw new CannotRetrieveDataException("Failed to retrieve all the required data"); }
+		if (!remainingRequests.isEmpty()) {
+			throw new CannotRetrieveDataException("Failed to retrieve all the required data");
+		}
 	}
 
 	/**
@@ -139,7 +140,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 				try {
 					// Pull the data from the Stock API
 					TradingDayPrices[] tradingData = api.stockData(
-							tickerDataset,
+					        tickerDataset,
 					        tickerSymbol,
 					        startDateInclusive,
 					        endDateExclusive,
@@ -187,8 +188,10 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		pool.shutdown();
 
 		try {
-			if (!pool.awaitTermination(timeout, TimeUnit.SECONDS)) { throw new CannotRetrieveDataException(
-			        String.format("API calls failed to complete in the expected timeout of %s seconds", timeout)); }
+			if (!pool.awaitTermination(timeout, TimeUnit.SECONDS)) {
+				throw new CannotRetrieveDataException(
+				        String.format("API calls failed to complete in the expected timeout of %s seconds", timeout));
+			}
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		}

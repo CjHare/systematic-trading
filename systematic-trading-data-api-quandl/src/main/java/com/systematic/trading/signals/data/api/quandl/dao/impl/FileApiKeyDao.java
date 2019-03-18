@@ -55,13 +55,15 @@ public class FileApiKeyDao implements ApiKeyDao {
 
 			final URL location = CLASSPATH.getResource(keyFileLocation);
 
-			if (location == null) { throw new CannotRetrieveConfigurationException(
-			        String.format(ERROR_MISSING_KEY_FILE, keyFileLocation)); }
+			if (location == null) {
+				throw new CannotRetrieveConfigurationException(String.format(ERROR_MISSING_KEY_FILE, keyFileLocation));
+			}
 
 			List<String> lines = Files.readAllLines(Paths.get(location.toURI()));
 
-			if (lines.size() != 1) { throw new CannotRetrieveConfigurationException(
-			        String.format(ERROR_EMPTY_KEY_FILE, keyFileLocation)); }
+			if (lines.size() != 1) {
+				throw new CannotRetrieveConfigurationException(String.format(ERROR_EMPTY_KEY_FILE, keyFileLocation));
+			}
 
 			return lines.get(0);
 		} catch (final NoSuchFileException | URISyntaxException e) {

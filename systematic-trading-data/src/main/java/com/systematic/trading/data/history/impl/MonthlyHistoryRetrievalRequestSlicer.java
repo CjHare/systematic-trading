@@ -60,7 +60,7 @@ public class MonthlyHistoryRetrievalRequestSlicer implements HistoryRetrievalReq
 			final LocalDate nextMonthStart = beginningOfNextMonth(startDateInclusive);
 			requests.add(
 			        new HibernateHistoryRetrievalRequest(
-			        		tickerDataset,
+			                tickerDataset,
 			                tickerSymbol,
 			                startDateInclusive,
 			                nextMonthStart));
@@ -72,7 +72,7 @@ public class MonthlyHistoryRetrievalRequestSlicer implements HistoryRetrievalReq
 			final LocalDate nextMonthStart = beginningOfNextMonth(workingInclusiveStartDate);
 			requests.add(
 			        new HibernateHistoryRetrievalRequest(
-			        		tickerDataset,
+			                tickerDataset,
 			                tickerSymbol,
 			                workingInclusiveStartDate,
 			                nextMonthStart));
@@ -83,7 +83,7 @@ public class MonthlyHistoryRetrievalRequestSlicer implements HistoryRetrievalReq
 		if (isNotBeginningOfMonth(endDateExclusive)) {
 			requests.add(
 			        new HibernateHistoryRetrievalRequest(
-			        		tickerDataset,
+			                tickerDataset,
 			                tickerSymbol,
 			                workingInclusiveStartDate,
 			                endDateExclusive));

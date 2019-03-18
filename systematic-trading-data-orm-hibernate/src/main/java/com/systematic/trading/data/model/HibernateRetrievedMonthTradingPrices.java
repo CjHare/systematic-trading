@@ -59,6 +59,7 @@ public class HibernateRetrievedMonthTradingPrices implements Serializable, Retri
 	private int year;
 
 	public HibernateRetrievedMonthTradingPrices() {
+
 		// Default constructor used by Hiberante
 	}
 

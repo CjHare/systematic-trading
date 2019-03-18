@@ -49,12 +49,13 @@ public class HttpUtil {
 
 			final HttpResponse response = httpClient.execute(getRequest);
 
-			if (response.getStatusLine()
-			        .getStatusCode() != 200) { throw new CannotRetrieveDataException(
-			                String.format(
-			                        "Failed retrieving URL: %s, HTTP error code : %s",
-			                        url,
-			                        response.getStatusLine().getStatusCode())); }
+			if (response.getStatusLine().getStatusCode() != 200) {
+				throw new CannotRetrieveDataException(
+				        String.format(
+				                "Failed retrieving URL: %s, HTTP error code : %s",
+				                url,
+				                response.getStatusLine().getStatusCode()));
+			}
 
 			final BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 

@@ -73,26 +73,18 @@ public class TradingStrategyIndicatorFactory {
 	        final SignalAnalysisListener signalListener,
 	        final int priceDataRange ) {
 
-		if (signal instanceof MacdConfiguration) { return macd(
-		        (MacdConfiguration) signal,
-		        filter,
-		        signalListener,
-		        priceDataRange); }
-		if (signal instanceof RsiConfiguration) { return rsi(
-		        (RsiConfiguration) signal,
-		        filter,
-		        signalListener,
-		        priceDataRange); }
-		if (signal instanceof SmaUptrendConfiguration) { return smaUptrend(
-		        (SmaUptrendConfiguration) signal,
-		        filter,
-		        signalListener,
-		        priceDataRange); }
-		if (signal instanceof EmaUptrendConfiguration) { return emaUptrand(
-		        (EmaUptrendConfiguration) signal,
-		        filter,
-		        signalListener,
-		        priceDataRange); }
+		if (signal instanceof MacdConfiguration) {
+			return macd((MacdConfiguration) signal, filter, signalListener, priceDataRange);
+		}
+		if (signal instanceof RsiConfiguration) {
+			return rsi((RsiConfiguration) signal, filter, signalListener, priceDataRange);
+		}
+		if (signal instanceof SmaUptrendConfiguration) {
+			return smaUptrend((SmaUptrendConfiguration) signal, filter, signalListener, priceDataRange);
+		}
+		if (signal instanceof EmaUptrendConfiguration) {
+			return emaUptrand((EmaUptrendConfiguration) signal, filter, signalListener, priceDataRange);
+		}
 
 		throw new IllegalArgumentException(
 		        String.format(

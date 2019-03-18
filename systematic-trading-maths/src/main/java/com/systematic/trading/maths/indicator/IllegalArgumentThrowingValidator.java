@@ -41,8 +41,9 @@ public class IllegalArgumentThrowingValidator implements Validator {
 	@Override
 	public void verifyGreaterThan( final int minimum, final int actual ) {
 
-		if (actual < minimum) { throw new IllegalArgumentException(
-		        String.format(MESSAGE_GREATER_THEN, minimum, actual)); }
+		if (actual < minimum) {
+			throw new IllegalArgumentException(String.format(MESSAGE_GREATER_THEN, minimum, actual));
+		}
 	}
 
 	@Override
@@ -108,11 +109,13 @@ public class IllegalArgumentThrowingValidator implements Validator {
 	private void validateNumberOfItems( final int numberOfItems, final int minimumNumberOfPrices ) {
 
 		// Enough data to calculate indicator?
-		if (numberOfItems < minimumNumberOfPrices) { throw new IllegalArgumentException(
-		        String.format(
-		                "At least %s non null data points are needed, only %s given",
-		                minimumNumberOfPrices,
-		                numberOfItems)); }
+		if (numberOfItems < minimumNumberOfPrices) {
+			throw new IllegalArgumentException(
+			        String.format(
+			                "At least %s non null data points are needed, only %s given",
+			                minimumNumberOfPrices,
+			                numberOfItems));
+		}
 	}
 
 	private int numberOfItems( final int firstNonNullItem, final int lastNonNullItem ) {

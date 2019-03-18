@@ -59,6 +59,7 @@ public class BackestOutputElasticConfigurationSingleton {
 	}
 
 	private BackestOutputElasticConfigurationSingleton() {
+
 		// Singleton is not be constructed
 	}
 }
